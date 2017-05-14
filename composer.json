@@ -1,0 +1,24 @@
+{
+    "type": "nabu-runtime",
+    "name": "nabu-3/runtime-nbfw-visualeditor",
+    "description": "nabu-3 Runtime Visual Editor based in mxGraph",
+    "keywords": [ "nabu-3", "nabu", "javascript", "runtime" ],
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Rafael Gutierrez",
+            "email": "ragutimar@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "nabu-3/composer-installer-plugin": ">=3.0"
+    }
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/nabu-3/runtime-nbfw-visualeditor"
+        }
+    ]
+}
