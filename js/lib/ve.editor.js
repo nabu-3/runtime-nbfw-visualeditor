@@ -14,6 +14,7 @@ Nabu.VisualEditor.Editor = function(container, config)
     this.config = config;
     this.editor = null;
     this.grid = null;
+    this.events = new Nabu.EventPool();
 };
 
 Nabu.VisualEditor.Editor.prototype =
@@ -37,25 +38,55 @@ Nabu.VisualEditor.Editor.prototype =
             graph.setConnectable(true);
             graph.popupMenuHandler.autoExpand = true;
             new mxRubberband(graph);
+
+            this.editor.graph.addListener(mxEvent.CELLS_RESIZED, function(sender, evt) {
+                this.events.fireEvent('onCellsResized', sender, evt);
+            });
+
+            this.editor.graph.addListener(mxEvent.CELLS_MOVED, function(sender, evt) {
+                this.events.fireEvent('onCellsMoved', sender, evt);
+            });
+
+            this.editor.graph.connectionHandler.addListener(mxEvent.START, function(sender, evt) {
+                this.events.fireEvent('onEdgeStart', sender, evt);
+            });
+
+            this.editor.graph.connectionHandler.addListener(mxEvent.CONNECT, function(sender, evt) {
+                this.events.fireEvent('onEdgeConnected', sender, evt);
+            });
+
             retval = true;
         }
 
         return retval;
     },
+    addEventListener: function(event)
+    {
+        this.events.addEventListener(event);
+    },
+
+    removeEventListener: function(event)
+    {
+        this.events.removeEventListener(event);
+    },
+
     enableGrid: function()
     {
         mxGraphHandler.prototype.guidesEnabled = true;
         this.editor.graph.graphHandler.scaleGrid = true;
         this.grid = new Nabu.VisualEditor.Grid(this.editor.graph);
     },
+
     enableGuides: function()
     {
         mxGraphHandler.prototype.guidesEnabled = true;
     },
+
     enableVertexLivePreview: function()
     {
         mxVertexHandler.prototype.livePreview = true;
     },
+
     enableEdgeLayout: function()
     {
         var Self = this;
@@ -75,6 +106,7 @@ Nabu.VisualEditor.Editor.prototype =
         };
 
     },
+
     layoutEdge: function(layout, edge)
     {
         var model = this.editor.graph.getModel();
@@ -91,6 +123,7 @@ Nabu.VisualEditor.Editor.prototype =
 
         layout.execute(this.editor.graph.getDefaultParent());
     },
+
     load: function(source)
     {
         var Self = this;
@@ -105,22 +138,26 @@ Nabu.VisualEditor.Editor.prototype =
         }));
         ajax.execute();
     },
+
     setDefaultVertexFillColor: function(color)
     {
         var style = this.editor.graph.getStylesheet().getDefaultVertexStyle();
         style[mxConstants.STYLE_FILLCOLOR] = color;
     },
+
     setDefaultEdgeRounded: function(status)
     {
         style = this.editor.graph.getStylesheet().getDefaultEdgeStyle();
         style[mxConstants.STYLE_ROUNDED] = status;
     },
+
     setDefaultEdgeTypeAsElbowConnector: function(orientation)
     {
         style = this.editor.graph.getStylesheet().getDefaultEdgeStyle();
         style[mxConstants.STYLE_EDGE] = mxEdgeStyle.ElbowConnector;
         this.editor.graph.alternateEdgeStyle = 'elbow=' + orientation;
     },
+
     fillWithSample: function()
     {
         var graph = this.editor.graph;
