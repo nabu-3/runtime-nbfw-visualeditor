@@ -21,6 +21,7 @@ Nabu.VisualEditor.Editor.prototype =
 {
     init: function()
     {
+        var Self = this;
         var retval = false;
 
         if (!mxClient.isBrowserSupported()) {
@@ -40,19 +41,19 @@ Nabu.VisualEditor.Editor.prototype =
             new mxRubberband(graph);
 
             this.editor.graph.addListener(mxEvent.CELLS_RESIZED, function(sender, evt) {
-                this.events.fireEvent('onCellsResized', sender, evt);
+                Self.events.fireEvent('onCellsResized', sender, evt);
             });
 
             this.editor.graph.addListener(mxEvent.CELLS_MOVED, function(sender, evt) {
-                this.events.fireEvent('onCellsMoved', sender, evt);
+                Self.events.fireEvent('onCellsMoved', sender, evt);
             });
 
             this.editor.graph.connectionHandler.addListener(mxEvent.START, function(sender, evt) {
-                this.events.fireEvent('onEdgeStart', sender, evt);
+                Self.events.fireEvent('onEdgeStart', sender, evt);
             });
 
             this.editor.graph.connectionHandler.addListener(mxEvent.CONNECT, function(sender, evt) {
-                this.events.fireEvent('onEdgeConnected', sender, evt);
+                Self.events.fireEvent('onEdgeConnected', sender, evt);
             });
 
             retval = true;
@@ -72,7 +73,6 @@ Nabu.VisualEditor.Editor.prototype =
 
     enableGrid: function()
     {
-        mxGraphHandler.prototype.guidesEnabled = true;
         this.editor.graph.graphHandler.scaleGrid = true;
         this.grid = new Nabu.VisualEditor.Grid(this.editor.graph);
     },
@@ -131,8 +131,8 @@ Nabu.VisualEditor.Editor.prototype =
         var ajax = new Nabu.Ajax.Connector(source, 'GET');
         ajax.addEventListener(new Nabu.Event({
             onLoad: function(e) {
-                var graph = Self.editor.graph;
-                var model = graph.getModel();
+                //var graph = Self.editor.graph;
+                //var model = graph.getModel();
                 Self.editor.readGraphModel(e.params.xml.documentElement);
             }
         }));

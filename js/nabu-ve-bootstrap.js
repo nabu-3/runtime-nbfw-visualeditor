@@ -5,7 +5,7 @@ $.fn.nabuVESiteEditor = function(options)
             console.log('nabuVESiteEditor ' + options);
             if (options === 'show' && this.nabuVESiteEditor) {
                 console.log('VE.SiteEditor show');
-                $(this).empty();
+                //$(this).empty();
                 var editor = this.nabuVESiteEditor;
                 if (editor.init()) {
                     editor.enableGrid();
@@ -22,13 +22,13 @@ $.fn.nabuVESiteEditor = function(options)
                     } else {
                         editor.fillWithSample();
                     }
+                    //editor.fillWithSample();
                 }
 
             }
         });
         return false;
     } else {
-        console.log('nabuVESiteEditor instantiate');
         return this.each(function() {
             var opts = $.extend({}, $.fn.nabuVESiteEditor.defaults, options);
             var data = $(this).data();

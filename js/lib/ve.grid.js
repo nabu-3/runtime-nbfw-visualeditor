@@ -56,7 +56,7 @@ Nabu.VisualEditor.Grid = function(graph)
 Nabu.VisualEditor.Grid.prototype = {
     repaintGrid: function()
     {
-        if (this.ctx != null)
+        if (this.ctx !== null)
         {
             var bounds = this.graph.getGraphBounds();
             var width = Math.max(bounds.x + bounds.width, this.graph.container.clientWidth);
@@ -147,7 +147,6 @@ Nabu.VisualEditor.Grid.prototype = {
                     this.ctx.closePath();
                     this.ctx.stroke();
                 }
-
             }
         }
     }
