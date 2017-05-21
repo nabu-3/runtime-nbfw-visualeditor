@@ -34,9 +34,9 @@ $.fn.nabuVESiteEditor = function(options)
             var data = $(this).data();
             opts = $.extend({}, opts, data);
             this.nabuVESiteEditor = new Nabu.VisualEditor.SiteEditor(this, '/js/visual-editor/config/site-target.xml', opts);
-            this.nabuVESiteEditor.addEventListener(new Nabu.Event({
-
-            }));
+            if (data['id']) {
+                this.nabuVESiteEditor.setId(data['id']);
+            }
         });
     }
 }

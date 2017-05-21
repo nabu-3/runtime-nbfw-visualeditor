@@ -40,21 +40,42 @@ Nabu.VisualEditor.Editor.prototype =
             graph.popupMenuHandler.autoExpand = true;
             new mxRubberband(graph);
 
-            this.editor.graph.addListener(mxEvent.CELLS_RESIZED, function(sender, evt) {
+            graph.addListener(mxEvent.CELLS_ADDED, function(sender, evt) {
+                console.log('CELLS_ADDED');
+                console.log(evt);
+            });
+            graph.addListener(mxEvent.CELLS_RESIZED, function(sender, evt) {
                 Self.events.fireEvent('onCellsResized', sender, evt);
             });
-
-            this.editor.graph.addListener(mxEvent.CELLS_MOVED, function(sender, evt) {
+            graph.addListener(mxEvent.CELLS_MOVED, function(sender, evt) {
+                console.log('CELLS_MOVED');
+                console.log(evt);
                 Self.events.fireEvent('onCellsMoved', sender, evt);
             });
-
-            this.editor.graph.connectionHandler.addListener(mxEvent.START, function(sender, evt) {
-                Self.events.fireEvent('onEdgeStart', sender, evt);
+            graph.addListener(mxEvent.CELLS_REMOVED, function(sender, evt) {
+                console.log('CELLS_REMOVED');
+                console.log(evt);
             });
 
-            this.editor.graph.connectionHandler.addListener(mxEvent.CONNECT, function(sender, evt) {
-                Self.events.fireEvent('onEdgeConnected', sender, evt);
+            graph.addListener(mxEvent.SPLIT_EDGE, function(sender, evt) {
+                console.log('SPLIT_EDGE');
+                console.log(evt);
             });
+            graph.addListener(mxEvent.FLIP_EDGE, function(sender, evt) {
+                console.log('FLIP_EDGE');
+                console.log(evt);
+            });
+
+            graph.addListener(mxEvent.CELL_CONNECTED, function(sender, evt) {
+                Self.events.fireEvent('onCellsConnected', sender, evt);
+            });
+
+            graph.popupMenuHandler.factoryMethod = function(menu, cell, evt) {
+                Self.events.fireEvent('onPopupMenu', menu, {
+                    "evt": evt,
+                    "cell": cell
+                });
+            }
 
             retval = true;
         }
