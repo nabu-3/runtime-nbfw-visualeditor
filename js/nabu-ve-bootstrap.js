@@ -2,10 +2,8 @@ $.fn.nabuVESiteEditor = function(options)
 {
     if (typeof options === 'string') {
         this.each(function() {
-            console.log('nabuVESiteEditor ' + options);
             if (options === 'show' && this.nabuVESiteEditor) {
-                console.log('VE.SiteEditor show');
-                //$(this).empty();
+                $(this).empty();
                 var editor = this.nabuVESiteEditor;
                 if (editor.init()) {
                     editor.enableGrid();
@@ -17,7 +15,8 @@ $.fn.nabuVESiteEditor = function(options)
                     editor.setDefaultEdgeTypeAsElbowConnector('vertical');
 
                     var data = $(this).data();
-                    if (data['source']) {
+                    if (data['source'] && data['id']) {
+                        editor.setId(data['id']);
                         editor.load(data['source']);
                     } else {
                         editor.fillWithSample();

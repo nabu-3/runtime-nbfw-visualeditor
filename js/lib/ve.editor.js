@@ -37,6 +37,7 @@ Nabu.VisualEditor.Editor.prototype =
             graph.panningHandler.useLeftButtonForPanning = false;
             graph.setHtmlLabels(true);
             graph.setConnectable(true);
+            graph.setDisconnectOnMove(false);
             graph.popupMenuHandler.autoExpand = true;
             new mxRubberband(graph);
 
