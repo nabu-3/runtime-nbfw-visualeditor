@@ -297,12 +297,10 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
                 if (vertex.edges !== null && vertex.edges.length > 0) {
                     for (var j in vertex.edges) {
                         var edge = vertex.edges[j];
-                        console.log(edge);
                         cells.push(this.encodeGeometry(edge));
                     }
                 }
             }
-            console.log(cells);
             var ajax = new Nabu.Ajax.Connector(
                 '/api/site/' + this.id + '/visual-editor/cell/?action=mass-geometry',
                 'POST',
