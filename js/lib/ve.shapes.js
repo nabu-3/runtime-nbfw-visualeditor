@@ -12,11 +12,17 @@ if (typeof Nabu.VisualEditor.Shapes === 'undefined') {
     Nabu.VisualEditor.Shapes = function() {};
 }
 
-Nabu.VisualEditor.Shapes.Page = function()
+Nabu.VisualEditor.Shapes.SiteTarget = function()
 {
     mxCylinder.call(this);
+}
+mxUtils.extend(Nabu.VisualEditor.Shapes.SiteTarget, mxCylinder);
+
+Nabu.VisualEditor.Shapes.Page = function()
+{
+    Nabu.VisualEditor.Shapes.SiteTarget.call(this);
 };
-mxUtils.extend(Nabu.VisualEditor.Shapes.Page, mxCylinder);
+mxUtils.extend(Nabu.VisualEditor.Shapes.Page, Nabu.VisualEditor.Shapes.SiteTarget);
 Nabu.VisualEditor.Shapes.Page.prototype.redrawPath = function(path, x, y, w, h, isForeground)
 {
     if (isForeground) {
@@ -32,9 +38,9 @@ mxCellRenderer.prototype.defaultShapes['page'] = Nabu.VisualEditor.Shapes.Page;
 
 Nabu.VisualEditor.Shapes.Document = function()
 {
-    mxCylinder.call(this);
+    Nabu.VisualEditor.Shapes.SiteTarget.call(this);
 };
-mxUtils.extend(Nabu.VisualEditor.Shapes.Document, mxCylinder);
+mxUtils.extend(Nabu.VisualEditor.Shapes.Document, Nabu.VisualEditor.Shapes.SiteTarget);
 Nabu.VisualEditor.Shapes.Document.prototype.redrawPath = function(path, x, y, w, h, isForeground)
 {
     var fold = (w > 0 ? Math.round(Math.min(w * 0.10, h * 0.10)) : 0);
@@ -59,9 +65,9 @@ mxCellRenderer.prototype.defaultShapes['document'] = Nabu.VisualEditor.Shapes.Do
 
 Nabu.VisualEditor.Shapes.PageMulti = function()
 {
-    mxCylinder.call(this);
+    Nabu.VisualEditor.Shapes.SiteTarget.call(this);
 };
-mxUtils.extend(Nabu.VisualEditor.Shapes.PageMulti, mxCylinder);
+mxUtils.extend(Nabu.VisualEditor.Shapes.PageMulti, Nabu.VisualEditor.Shapes.SiteTarget);
 Nabu.VisualEditor.Shapes.PageMulti.prototype.redrawPath = function(path, x, y, w, h, isForeground)
 {
     var fold = (w > 0 ? Math.round(Math.min(w * 0.10, h * 0.10)) : 0);
@@ -97,9 +103,9 @@ mxCellRenderer.prototype.defaultShapes['page-multi'] = Nabu.VisualEditor.Shapes.
 
 Nabu.VisualEditor.Shapes.DocumentMulti = function()
 {
-    mxCylinder.call(this);
+    Nabu.VisualEditor.Shapes.SiteTarget.call(this);
 };
-mxUtils.extend(Nabu.VisualEditor.Shapes.DocumentMulti, mxCylinder);
+mxUtils.extend(Nabu.VisualEditor.Shapes.DocumentMulti, Nabu.VisualEditor.Shapes.SiteTarget);
 Nabu.VisualEditor.Shapes.DocumentMulti.prototype.redrawPath = function(path, x, y, w, h, isForeground)
 {
     var fold = (w > 0 ? Math.round(Math.min(w * 0.10, h * 0.10)) : 0);
