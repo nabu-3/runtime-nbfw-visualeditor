@@ -15,7 +15,7 @@ Nabu.VisualEditor.SiteEditor = function(container, config)
     this.id = null;
 };
 
-nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
+nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], function()
 {
     nabu.extend(Nabu.VisualEditor.SiteEditor, Nabu.VisualEditor.Editor);
 
@@ -96,13 +96,13 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
         var parent = graph.getDefaultParent();
         var container = $('#ve_remote_modal_container');
         var mxPoint = graph.getPointForEvent(evt);
+        var modals = new Nabu.VisualEditor.Modals.SiteTarget();
 
         var submenu = menu.addItem('Nuevo', null, null);
         menu.addItem('Página', null, function()
         {
             if (container.length === 1) {
-                var page = new Nabu.VisualEditor.Shapes.Page();
-                page.modalNewPage(Self, container, graph, mxPoint);
+                modals.newPage(Self, container, graph, mxPoint);
             } else {
                 throw "Remote Modals container not found";
             }
@@ -110,8 +110,7 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
         menu.addItem('Página Múltiple', null, function()
         {
             if (container.length === 1) {
-                var pagemulti = new Nabu.VisualEditor.Shapes.PageMulti();
-                pagemulti.modalNewPageMulti(Self, container, graph, mxPoint);
+                modals.newPageMulti(Self, container, graph, mxPoint);
             } else {
                 throw "Remote Modals container not found";
             }
@@ -120,8 +119,7 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
         menu.addItem('Documento', null, function()
         {
             if (container.length === 1) {
-                var document = new Nabu.VisualEditor.Shapes.Document();
-                document.modalNewDocument(Self, container, graph, mxPoint);
+                modals.newDocument(Self, container, graph, mxPoint);
             } else {
                 throw "Remote Modals container not found";
             }
@@ -129,8 +127,7 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
         menu.addItem('Documento Múltiple', null, function()
         {
             if (container.length === 1) {
-                var document = new Nabu.VisualEditor.Shapes.DocumentMulti();
-                document.modalNewDocumentMulti(Self, container, graph, mxPoint);
+                modals.newDocumentMulti(Self, container, graph, mxPoint);
             } else {
                 throw "Remote Modals container not found";
             }
@@ -216,14 +213,14 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
         var Self = this;
         var graph = this.editor.graph;
         var model = graph.getModel();
+        var modals = new Nabu.VisualEditor.Modals.SiteTarget();
+        var container = $('#ve_remote_modal_container');
 
         var submenu = menu.addItem('Editar', null, null);
         menu.addItem('Contenido principal', null, function()
         {
-            var container = $('#ve_remote_modal_container');
             if (container.length === 1) {
-                var page = new Nabu.VisualEditor.Shapes.Page();
-                page.modalMainContent(Self, container, model, cell);
+                modals.mainContent(Self, container, model, cell);
             } else {
                 throw "Remote Modals container not found";
             }
@@ -235,14 +232,14 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
         var Self = this;
         var graph = this.editor.graph;
         var model = graph.getModel();
+        var modals = new Nabu.VisualEditor.Modals.SiteTarget();
+        var container = $('#ve_remote_modal_container');
 
         var submenu = menu.addItem('Editar', null, null);
         menu.addItem('Contenido principal', null, function()
         {
-            var container = $('#ve_remote_modal_container');
             if (container.length === 1) {
-                var pagemulti = new Nabu.VisualEditor.Shapes.PageMulti();
-                pagemulti.modalMainContent(Self, container, model, cell);
+                modals.mainContent(Self, container, model, cell);
             } else {
                 throw "Remote Modals container not found";
             }
@@ -254,14 +251,14 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
         var Self = this;
         var graph = this.editor.graph;
         var model = graph.getModel();
+        var modals = new Nabu.VisualEditor.Modals.SiteTarget();
+        var container = $('#ve_remote_modal_container');
 
         var submenu = menu.addItem('Editar', null, null);
         menu.addItem('Contenido principal', null, function()
         {
-            var container = $('#ve_remote_modal_container');
             if (container.length === 1) {
-                var document = new Nabu.VisualEditor.Shapes.Document();
-                document.modalMainContent(Self, container, model, cell);
+                modals.mainContent(Self, container, model, cell);
             } else {
                 throw "Remote Modals container not found";
             }
@@ -273,14 +270,13 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'Modal'], function()
         var Self = this;
         var graph = this.editor.graph;
         var model = graph.getModel();
+        var container = $('#ve_remote_modal_container');
 
         var submenu = menu.addItem('Editar', null, null);
         menu.addItem('Contenido principal', null, function()
         {
-            var container = $('#ve_remote_modal_container');
             if (container.length === 1) {
-                var docmulti = new Nabu.VisualEditor.Shapes.DocumentMulti();
-                docmulti.modalMainContent(Self, container, model, cell);
+                modals.mainContent(Self, container, model, cell);
             } else {
                 throw "Remote Modals container not found";
             }

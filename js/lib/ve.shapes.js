@@ -17,64 +17,12 @@ Nabu.VisualEditor.Shapes.SiteTarget = function()
     mxCylinder.call(this);
 }
 mxUtils.extend(Nabu.VisualEditor.Shapes.SiteTarget, mxCylinder);
-Nabu.VisualEditor.Shapes.SiteTarget.prototype.modalMainContent = function(editor, container, model, cell)
-{
-    var modal = new Nabu.UI.Modal(container[0], {});
-    modal.addEventListener(new Nabu.Event({
-        onAfterSubmit: function(e) {
-            var selector = container.find('[data-toggle="nabu-lang-selector"]');
-            if (selector.length === 1) {
-                var data = selector.data();
-                if (data.defaultLang) {
-                    var input = container.find('form input[name="title[' + data.defaultLang + ']"]');
-                    if (input.length === 1) {
-                        model.setValue(cell, input.val());
-                    }
-                }
-            }
-            e.source.close();
-        }
-    }));
-    modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/' + cell.objectId + '/contenido-principal');
-}
-Nabu.VisualEditor.Shapes.SiteTarget.prototype.modalNewSiteTarget = function(editor, container, graph, type, mxPoint)
-{
-    var model = graph.getModel();
-    var parent = graph.getDefaultParent();
-    var modal = new Nabu.UI.Modal(container[0], {});
-    modal.addEventListener(new Nabu.Event({
-        onAfterSubmit: function(e) {
-            var selector = container.find('[data-toggle="nabu-lang-selector"]');
-            if (selector.length === 1) {
-                var data = selector.data();
-                if (data.defaultLang) {
-                    var input = container.find('form input[name="title[' + data.defaultLang + ']"]');
-                    if (input.length === 1) {
-                        var vertex = graph.insertVertex(
-                            parent, null, input.val(), mxPoint.x, mxPoint.y, 120, 160, 'shape=' + type + ';whiteSpace=wrap;'
-                        );
-                        vertex.type = type;
-                        vertex.objectId = e.params.response.json.data.id * 1;
-                        vertex.id = 'st-' + e.params.response.json.data.id;
-                        editor.saveCellsGeometry([vertex]);
-                    }
-                }
-            }
-            e.source.close();
-        }
-    }));
-    modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/nuevo-destino?type=' + type);
-}
 
 Nabu.VisualEditor.Shapes.Page = function()
 {
     Nabu.VisualEditor.Shapes.SiteTarget.call(this);
 };
 mxUtils.extend(Nabu.VisualEditor.Shapes.Page, Nabu.VisualEditor.Shapes.SiteTarget);
-Nabu.VisualEditor.Shapes.Page.prototype.modalNewPage = function(editor, container, model, mxPoint)
-{
-    Nabu.VisualEditor.Shapes.SiteTarget.prototype.modalNewSiteTarget.call(this, editor, container, model, 'page', mxPoint);
-};
 Nabu.VisualEditor.Shapes.Page.prototype.redrawPath = function(path, x, y, w, h, isForeground)
 {
     if (isForeground) {
@@ -93,10 +41,6 @@ Nabu.VisualEditor.Shapes.Document = function()
     Nabu.VisualEditor.Shapes.SiteTarget.call(this);
 };
 mxUtils.extend(Nabu.VisualEditor.Shapes.Document, Nabu.VisualEditor.Shapes.SiteTarget);
-Nabu.VisualEditor.Shapes.Document.prototype.modalNewDocument = function(editor, container, model, mxPoint)
-{
-    Nabu.VisualEditor.Shapes.SiteTarget.prototype.modalNewSiteTarget.call(this, editor, container, model, 'document', mxPoint);
-};
 Nabu.VisualEditor.Shapes.Document.prototype.redrawPath = function(path, x, y, w, h, isForeground)
 {
     var fold = (w > 0 ? Math.round(Math.min(w * 0.10, h * 0.10)) : 0);
@@ -124,10 +68,6 @@ Nabu.VisualEditor.Shapes.PageMulti = function()
     Nabu.VisualEditor.Shapes.SiteTarget.call(this);
 };
 mxUtils.extend(Nabu.VisualEditor.Shapes.PageMulti, Nabu.VisualEditor.Shapes.SiteTarget);
-Nabu.VisualEditor.Shapes.PageMulti.prototype.modalNewPageMulti = function(editor, container, model, mxPoint)
-{
-    Nabu.VisualEditor.Shapes.SiteTarget.prototype.modalNewSiteTarget.call(this, editor, container, model, 'page-multi', mxPoint);
-};
 Nabu.VisualEditor.Shapes.PageMulti.prototype.redrawPath = function(path, x, y, w, h, isForeground)
 {
     var fold = (w > 0 ? Math.round(Math.min(w * 0.10, h * 0.10)) : 0);
@@ -166,10 +106,6 @@ Nabu.VisualEditor.Shapes.DocumentMulti = function()
     Nabu.VisualEditor.Shapes.SiteTarget.call(this);
 };
 mxUtils.extend(Nabu.VisualEditor.Shapes.DocumentMulti, Nabu.VisualEditor.Shapes.SiteTarget);
-Nabu.VisualEditor.Shapes.DocumentMulti.prototype.modalNewDocumentMulti = function(editor, container, model, mxPoint)
-{
-    Nabu.VisualEditor.Shapes.SiteTarget.prototype.modalNewSiteTarget.call(this, editor, container, model, 'document-multi', mxPoint);
-};
 Nabu.VisualEditor.Shapes.DocumentMulti.prototype.redrawPath = function(path, x, y, w, h, isForeground)
 {
     var fold = (w > 0 ? Math.round(Math.min(w * 0.10, h * 0.10)) : 0);
