@@ -85,7 +85,40 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
                 e.source.close();
             }
         }));
-        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/' + cell.objectId + '/contenido-principal');
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/contenido-principal');
+    },
+
+    url: function(editor, container, model, cell)
+    {
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e) {
+                e.source.close();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/url');
+    },
+
+    seo: function(editor, container, model, cell)
+    {
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e) {
+                e.source.close();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/seo');
+    },
+
+    section: function(editor, container, model, cell, id)
+    {
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e) {
+                e.source.close();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/seccion/' + id);
     }
 };
 nabu.registerLibrary('VE.Modals', ['Modal']);
