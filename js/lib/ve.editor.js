@@ -15,6 +15,7 @@ Nabu.VisualEditor.Editor = function(container, config)
     this.editor = null;
     this.grid = null;
     this.events = new Nabu.EventPool();
+    this.wheelLocked = 0;
 };
 
 Nabu.VisualEditor.Editor.prototype =
@@ -39,6 +40,7 @@ Nabu.VisualEditor.Editor.prototype =
             graph.setConnectable(true);
             graph.setDisconnectOnMove(false);
             graph.popupMenuHandler.autoExpand = true;
+
             new mxRubberband(graph);
 
             graph.addListener(mxEvent.CELLS_ADDED, function(sender, evt) {
@@ -91,6 +93,34 @@ Nabu.VisualEditor.Editor.prototype =
     removeEventListener: function(event)
     {
         this.events.removeEventListener(event);
+    },
+
+    lockWheel: function()
+    {
+        this.wheelLocked++;
+    },
+
+    unlockWheel: function()
+    {
+        this.wheelLocked --; //= (this.wheelLocked > 0 ? 1 : 0);
+    },
+
+    enableMouseWheel: function()
+    {
+        var Self = this;
+
+        mxEvent.addMouseWheelListener(function(evt, up)
+        {
+            if (Self.wheelLocked === 0) {
+                if (up) {
+                    Self.editor.graph.zoomIn();
+                } else {
+                    Self.editor.graph.zoomOut();
+                }
+
+                mxEvent.consume(evt);
+            }
+        });
     },
 
     enableGrid: function()

@@ -85,6 +85,10 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
                             Self.fillCommonVertexPopupMenu(menu, cell, evt);
                             break;
                     }
+                    if (cell.objectId) {
+                        menu.addSeparator();
+                        menu.addItem('ID: #' + cell.objectId, null, null, null, null, false, false);
+                    }
                 }
             }
         }));
@@ -249,6 +253,11 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
         {
             modals.url(Self, container, model, cell);
         });
+        var sdk = menu.addItem('SDK', null, null);
+        menu.addItem('Identificación', null, function()
+        {
+            modals.sdkIdentity(Self, container, model, cell);
+        }, sdk);
     }
 
     Nabu.VisualEditor.SiteEditor.prototype.fillPagePopupMenu = function(menu, cell, evt)

@@ -20,6 +20,7 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
 {
     newSiteTarget: function(editor, container, graph, type, mxPoint)
     {
+        editor.lockWheel();
         var model = graph.getModel();
         var parent = graph.getDefaultParent();
         var modal = new Nabu.UI.Modal(container[0], {});
@@ -42,6 +43,7 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
                     }
                 }
                 e.source.close();
+                editor.unlockWheel();
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/nuevo-destino?type=' + type);
@@ -69,6 +71,7 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
 
     mainContent: function(editor, container, model, cell)
     {
+        editor.lockWheel();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
             onAfterSubmit: function(e) {
@@ -83,6 +86,10 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
                     }
                 }
                 e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/contenido-principal');
@@ -90,10 +97,15 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
 
     url: function(editor, container, model, cell)
     {
+        editor.lockWheel();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
             onAfterSubmit: function(e) {
                 e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/url');
@@ -101,10 +113,15 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
 
     seo: function(editor, container, model, cell)
     {
+        editor.lockWheel();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
             onAfterSubmit: function(e) {
                 e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/seo');
@@ -112,17 +129,18 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
 
     section: function(editor, container, model, cell, id)
     {
+        editor.lockWheel();
         id = (typeof id === 'undefined' ? '' : id);
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
             onAfterSubmit: function(e) {
-                if (id === '') {
-                    var selector = container.find('[data-toggle="nabu-lang-selector"]');
-                    if (selector.length === 1) {
-                        var data = selector.data();
-                        if (data.defaultLang) {
-                            var input = container.find('form input[name="title[' + data.defaultLang + ']"]');
-                            if (input.length === 1) {
+                var selector = container.find('[data-toggle="nabu-lang-selector"]');
+                if (selector.length === 1) {
+                    var data = selector.data();
+                    if (data.defaultLang) {
+                        var input = container.find('form input[name="title[' + data.defaultLang + ']"]');
+                        if (input.length === 1) {
+                            if (id === '') {
                                 if (!cell.section_ids) {
                                     cell.section_ids = [e.params.response.json.data.id];
                                     cell.section_names = [input.val()];
@@ -130,11 +148,20 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
                                     cell.section_ids.push(e.params.response.json.data.id);
                                     cell.section_names.push(input.val());
                                 }
+                            } else {
+                                var p = cell.section_ids.indexOf(id);
+                                if (p > -1) {
+                                    cell.section_names[p] = input.val();
+                                }
                             }
                         }
                     }
                 }
                 e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/seccion/' + id);
@@ -142,6 +169,7 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
 
     removeSections: function(editor, container, model, cell)
     {
+        editor.lockWheel();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
             onAfterSubmit: function(e) {
@@ -166,9 +194,29 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
                     console.log(section_names);
                 }
                 e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/eliminar-secciones');
+    },
+
+    sdkIdentity: function(editor, container, model, cell)
+    {
+        editor.lockWheel();
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e) {
+                e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/identificacion');
     }
 };
 nabu.registerLibrary('VE.Modals', ['Modal']);

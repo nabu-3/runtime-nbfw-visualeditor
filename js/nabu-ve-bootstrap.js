@@ -8,6 +8,7 @@ $.fn.nabuVESiteEditor = function(options)
                 if (editor.init()) {
                     editor.enableGrid();
                     editor.enableGuides();
+                    editor.enableMouseWheel();
                     editor.enableVertexLivePreview();
                     editor.enableEdgeLayout();
                     editor.setDefaultVertexFillColor('#ffffff');
