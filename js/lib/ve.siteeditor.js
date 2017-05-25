@@ -219,9 +219,8 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
         var secciones = menu.addItem('Secciones', null, null, submenu);
         menu.addItem('Nueva sección', null, function()
         {
-
+            modals.section(Self, container, model, cell);
         }, secciones);
-        console.log(cell);
         if (cell.section_ids && cell.section_ids !== null && cell.section_ids.length > 0) {
             menu.addSeparator(secciones);
             for (var i = 0; i < cell.section_ids.length; i++) {
@@ -234,6 +233,11 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
                 }, secciones);
                 $(item).data('id', id);
             }
+            menu.addSeparator(secciones);
+            menu.addItem('Eliminar secciones', null, function(evt)
+            {
+                modals.removeSections(Self, container, model, cell);
+            }, secciones);
         }
         menu.addSeparator(submenu);
         if (cell.type === 'page' || cell.type === 'page-multi') {

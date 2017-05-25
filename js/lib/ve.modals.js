@@ -112,13 +112,63 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
 
     section: function(editor, container, model, cell, id)
     {
+        id = (typeof id === 'undefined' ? '' : id);
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
             onAfterSubmit: function(e) {
+                if (id === '') {
+                    var selector = container.find('[data-toggle="nabu-lang-selector"]');
+                    if (selector.length === 1) {
+                        var data = selector.data();
+                        if (data.defaultLang) {
+                            var input = container.find('form input[name="title[' + data.defaultLang + ']"]');
+                            if (input.length === 1) {
+                                if (!cell.section_ids) {
+                                    cell.section_ids = [e.params.response.json.data.id];
+                                    cell.section_names = [input.val()];
+                                } else {
+                                    cell.section_ids.push(e.params.response.json.data.id);
+                                    cell.section_names.push(input.val());
+                                }
+                            }
+                        }
+                    }
+                }
                 e.source.close();
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/seccion/' + id);
+    },
+
+    removeSections: function(editor, container, model, cell)
+    {
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e) {
+                var ids = e.params.response.json.data.ids;
+                if (ids instanceof Array && ids.length > 0 &&
+                    cell.section_ids && cell.section_ids instanceof Array && cell.section_ids.length > 0
+                ) {
+                    console.log("Hola");
+                    console.log(ids);
+                    var section_ids = new Array();
+                    var section_names = new Array();
+                    for (var i = 0; i < cell.section_ids.length; i++) {
+                        var sid = cell.section_ids[i];
+                        if (ids.indexOf(sid * 1) < 0) {
+                            section_ids.push(sid);
+                            section_names.push(cell.section_names[i]);
+                        }
+                    }
+                    cell.section_ids = section_ids;
+                    cell.section_names = section_names;
+                    console.log(section_ids);
+                    console.log(section_names);
+                }
+                e.source.close();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/eliminar-secciones');
     }
 };
 nabu.registerLibrary('VE.Modals', ['Modal']);
