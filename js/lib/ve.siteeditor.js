@@ -222,7 +222,7 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
 
         }, secciones);
         console.log(cell);
-        if (cell.section_ids !== null && cell.section_ids.length > 0) {
+        if (cell.section_ids && cell.section_ids !== null && cell.section_ids.length > 0) {
             menu.addSeparator(secciones);
             for (var i = 0; i < cell.section_ids.length; i++) {
                 var id = cell.section_ids[i];
