@@ -258,6 +258,19 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
         {
             modals.sdkIdentity(Self, container, model, cell);
         }, sdk);
+        menu.addSeparator(sdk);
+        menu.addItem('HTML', null, function()
+        {
+            modals.sdkHTML(Self, container, model, cell);
+        }, sdk);
+        menu.addItem('PHP / Framework', null, function()
+        {
+            modals.sdkPHP(Self, container, model, cell);
+        }, sdk);
+        menu.addItem('Smarty', null, function()
+        {
+            modals.sdkSmarty(Self, container, model, cell);
+        }, sdk);
     }
 
     Nabu.VisualEditor.SiteEditor.prototype.fillPagePopupMenu = function(menu, cell, evt)

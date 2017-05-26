@@ -25,7 +25,8 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
         var parent = graph.getDefaultParent();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
-            onAfterSubmit: function(e) {
+            onAfterSubmit: function(e)
+            {
                 var selector = container.find('[data-toggle="nabu-lang-selector"]');
                 if (selector.length === 1) {
                     var data = selector.data();
@@ -74,7 +75,8 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
         editor.lockWheel();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
-            onAfterSubmit: function(e) {
+            onAfterSubmit: function(e)
+            {
                 var selector = container.find('[data-toggle="nabu-lang-selector"]');
                 if (selector.length === 1) {
                     var data = selector.data();
@@ -100,7 +102,8 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
         editor.lockWheel();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
-            onAfterSubmit: function(e) {
+            onAfterSubmit: function(e)
+            {
                 e.source.close();
             },
             onHideCompleted: function(e)
@@ -116,7 +119,8 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
         editor.lockWheel();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
-            onAfterSubmit: function(e) {
+            onAfterSubmit: function(e)
+            {
                 e.source.close();
             },
             onHideCompleted: function(e)
@@ -133,7 +137,8 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
         id = (typeof id === 'undefined' ? '' : id);
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
-            onAfterSubmit: function(e) {
+            onAfterSubmit: function(e)
+            {
                 var selector = container.find('[data-toggle="nabu-lang-selector"]');
                 if (selector.length === 1) {
                     var data = selector.data();
@@ -172,7 +177,8 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
         editor.lockWheel();
         var modal = new Nabu.UI.Modal(container[0], {});
         modal.addEventListener(new Nabu.Event({
-            onAfterSubmit: function(e) {
+            onAfterSubmit: function(e)
+            {
                 var ids = e.params.response.json.data.ids;
                 if (ids instanceof Array && ids.length > 0 &&
                     cell.section_ids && cell.section_ids instanceof Array && cell.section_ids.length > 0
@@ -217,6 +223,57 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/identificacion');
+    },
+
+    sdkHTML: function(editor, container, model, cell)
+    {
+        editor.lockWheel();
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e)
+            {
+                e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/html');
+    },
+
+    sdkPHP: function(editor, container, model, cell)
+    {
+        editor.lockWheel();
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e)
+            {
+                e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/php');
+    },
+
+    sdkSmarty: function(editor, container, model, cell)
+    {
+        editor.lockWheel();
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e)
+            {
+                e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/smarty');
     }
 };
 nabu.registerLibrary('VE.Modals', ['Modal']);
