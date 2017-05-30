@@ -276,4 +276,52 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/smarty');
     }
 };
+
+Nabu.VisualEditor.Modals.SiteTargetCTA = function()
+{
+}
+
+Nabu.VisualEditor.Modals.SiteTargetCTA.prototype =
+{
+};
+
+Nabu.VisualEditor.Modals.SiteMap = function()
+{
+}
+
+Nabu.VisualEditor.Modals.SiteMap.prototype =
+{
+    newMap: function(editor, container, graph, mxPoint)
+    {
+        editor.lockWheel();
+        var model = graph.getModel();
+        var parent = graph.getDefaultParent();
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e)
+            {
+                var selector = container.find('[data-toggle="nabu-lang-selector"]');
+                if (selector.length === 1) {
+                    var data = selector.data();
+                    if (data.defaultLang) {
+                        var input = container.find('form input[name="content[' + data.defaultLang + ']"]');
+                        if (input.length === 1) {
+                            var vertex = graph.insertVertex(
+                                parent, null, input.val(), mxPoint.x, mxPoint.y, 60, 60, 'shape=cluster;whiteSpace=wrap;'
+                            );
+                            vertex.type = 'cluster';
+                            vertex.objectId = e.params.response.json.data.id * 1;
+                            vertex.id = 'smclu-' + e.params.response.json.data.id;
+                            editor.saveCellsGeometry([vertex]);
+                        }
+                    }
+                }
+                e.source.close();
+                editor.unlockWheel();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/nuevo-mapa');
+    }
+};
+
 nabu.registerLibrary('VE.Modals', ['Modal']);

@@ -41,18 +41,30 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
                               ? e.params.properties.edge.source.objectId
                               : null
                 ;
+                var source_type = (e.params.properties.edge.source !== null && e.params.properties.edge.source.type)
+                                ? e.params.properties.edge.source.type
+                                : null
+                ;
                 var target_id = (e.params.properties.edge.target !== null && e.params.properties.edge.target.objectId)
                               ? e.params.properties.edge.target.objectId
                               : null
                 ;
-                id = Self.saveCTAConnection(id, source_id, target_id);
-                if (id !== null) {
-                    e.params.properties.edge.id = 'cta-' + id;
-                    e.params.properties.edge.type = 'cta';
-                    e.params.properties.edge.objectId = id * 1;
-                    Self.saveCellsGeometry([e.params.properties.edge]);
-                } else {
-                    throw "Invalid ID returned";
+                var target_type = (e.params.properties.edge.target !== null && e.params.properties.edge.target.type)
+                                ? e.params.properties.edge.target.type
+                                : null
+                ;
+                if ((source_type === 'page' || source_type === 'page-multi' || source_type === 'document' || source_type === 'document-multi') &&
+                    (target_type === 'page' || target_type === 'page-multi' || target_type === 'document' || target_type === 'document-multi')
+                ) {
+                    id = Self.saveCTAConnection(id, source_id, target_id);
+                    if (id !== null) {
+                        e.params.properties.edge.id = 'cta-' + id;
+                        e.params.properties.edge.type = 'cta';
+                        e.params.properties.edge.objectId = id * 1;
+                        Self.saveCellsGeometry([e.params.properties.edge]);
+                    } else {
+                        throw "Invalid ID returned";
+                    }
                 }
             },
             onPopupMenu: function(e) {
@@ -108,33 +120,33 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
         var model = graph.getModel();
         var parent = graph.getDefaultParent();
         var mxPoint = graph.getPointForEvent(evt);
-        var modals = new Nabu.VisualEditor.Modals.SiteTarget();
+        var target_modals = new Nabu.VisualEditor.Modals.SiteTarget();
+        var map_modals = new Nabu.VisualEditor.Modals.SiteMap();
 
         var submenu = menu.addItem('Nuevo', null, null);
         menu.addItem('Página', null, function()
         {
-            modals.newPage(Self, container, graph, mxPoint);
+            target_modals.newPage(Self, container, graph, mxPoint);
         }, submenu);
         menu.addItem('Página Múltiple', null, function()
         {
-            modals.newPageMulti(Self, container, graph, mxPoint);
+            target_modals.newPageMulti(Self, container, graph, mxPoint);
         }, submenu);
         menu.addSeparator(submenu);
         menu.addItem('Documento', null, function()
         {
-            modals.newDocument(Self, container, graph, mxPoint);
+            target_modals.newDocument(Self, container, graph, mxPoint);
         }, submenu);
         menu.addItem('Documento Múltiple', null, function()
         {
-            modals.newDocumentMulti(Self, container, graph, mxPoint);
+            target_modals.newDocumentMulti(Self, container, graph, mxPoint);
         }, submenu);
-        /*
         menu.addSeparator(submenu);
         menu.addItem('Grupo de páginas', null, function()
         {
-            var mxPoint = graph.getPointForEvent(evt);
-            graph.insertVertex(parent, null, 'Nuevo grupo de páginas', mxPoint.x, mxPoint.y, 40, 40, 'shape=cluster;whiteSpace=wrap;');
+            map_modals.newMap(Self, container, graph, mxPoint);
         }, submenu);
+        /*
         menu.addItem('Selector condicional', null, function()
         {
             var mxPoint = graph.getPointForEvent(evt);
@@ -214,16 +226,16 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
         var Self = this;
         var graph = this.editor.graph;
         var model = graph.getModel();
-        var modals = new Nabu.VisualEditor.Modals.SiteTarget();
+        var target_modals = new Nabu.VisualEditor.Modals.SiteTarget();
         var submenu = menu.addItem('Contenido', null, null);
         menu.addItem('Principal', null, function()
         {
-            modals.mainContent(Self, container, model, cell);
+            target_modals.mainContent(Self, container, model, cell);
         }, submenu);
         var secciones = menu.addItem('Secciones', null, null, submenu);
         menu.addItem('Nueva sección', null, function()
         {
-            modals.section(Self, container, model, cell);
+            target_modals.section(Self, container, model, cell);
         }, secciones);
         if (cell.section_ids && cell.section_ids !== null && cell.section_ids.length > 0) {
             menu.addSeparator(secciones);
@@ -233,43 +245,43 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
                 var item = menu.addItem(name, null, function(evt)
                 {
                     var id = $(evt.target).closest('tr').data('id');
-                    modals.section(Self, container, model, cell, id);
+                    target_modals.section(Self, container, model, cell, id);
                 }, secciones);
                 $(item).data('id', id);
             }
             menu.addSeparator(secciones);
             menu.addItem('Eliminar secciones', null, function(evt)
             {
-                modals.removeSections(Self, container, model, cell);
+                target_modals.removeSections(Self, container, model, cell);
             }, secciones);
         }
         menu.addSeparator(submenu);
         if (cell.type === 'page' || cell.type === 'page-multi') {
             menu.addItem('SEO', null, function() {
-                modals.seo(Self, container, model, cell);
+                target_modals.seo(Self, container, model, cell);
             }, submenu);
         }
         menu.addItem('URL', null, function()
         {
-            modals.url(Self, container, model, cell);
+            target_modals.url(Self, container, model, cell);
         });
         var sdk = menu.addItem('SDK', null, null);
         menu.addItem('Identificación', null, function()
         {
-            modals.sdkIdentity(Self, container, model, cell);
+            target_modals.sdkIdentity(Self, container, model, cell);
         }, sdk);
         menu.addSeparator(sdk);
         menu.addItem('HTML', null, function()
         {
-            modals.sdkHTML(Self, container, model, cell);
+            target_modals.sdkHTML(Self, container, model, cell);
         }, sdk);
         menu.addItem('PHP / Framework', null, function()
         {
-            modals.sdkPHP(Self, container, model, cell);
+            target_modals.sdkPHP(Self, container, model, cell);
         }, sdk);
         menu.addItem('Smarty', null, function()
         {
-            modals.sdkSmarty(Self, container, model, cell);
+            target_modals.sdkSmarty(Self, container, model, cell);
         }, sdk);
     }
 
