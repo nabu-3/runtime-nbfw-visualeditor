@@ -35,36 +35,80 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
                     Self.saveCellsGeometry(e.params.properties.cells);
                 }
             },
-            onCellsConnected: function(e) {
-                var id = e.params.properties.edge.objectId ? e.params.properties.edge.objectId : null;
-                var source_id = (e.params.properties.edge.source !== null && e.params.properties.edge.source.objectId)
-                              ? e.params.properties.edge.source.objectId
+            onCellsConnected: function(e)
+            {
+                var graph = Self.editor.graph;
+                var edge = e.params.properties.edge;
+                var id = edge.objectId ? edge.objectId : null;
+                var source_id = (edge.source !== null && edge.source.objectId)
+                              ? edge.source.objectId
                               : null
                 ;
-                var source_type = (e.params.properties.edge.source !== null && e.params.properties.edge.source.type)
-                                ? e.params.properties.edge.source.type
+                var source_type = (edge.source !== null && edge.source.type)
+                                ? edge.source.type
                                 : null
                 ;
-                var target_id = (e.params.properties.edge.target !== null && e.params.properties.edge.target.objectId)
-                              ? e.params.properties.edge.target.objectId
+                var target_id = (edge.target !== null && edge.target.objectId)
+                              ? edge.target.objectId
                               : null
                 ;
-                var target_type = (e.params.properties.edge.target !== null && e.params.properties.edge.target.type)
-                                ? e.params.properties.edge.target.type
+                var target_type = (edge.target !== null && edge.target.type)
+                                ? edge.target.type
                                 : null
                 ;
+                console.log([source_id, source_type, target_id, target_type]);
                 if ((source_type === 'page' || source_type === 'page-multi' || source_type === 'document' || source_type === 'document-multi') &&
                     (target_type === 'page' || target_type === 'page-multi' || target_type === 'document' || target_type === 'document-multi')
                 ) {
-                    id = Self.saveCTAConnection(id, source_id, target_id);
-                    if (id !== null) {
-                        e.params.properties.edge.id = 'cta-' + id;
-                        e.params.properties.edge.type = 'cta';
-                        e.params.properties.edge.objectId = id * 1;
-                        Self.saveCellsGeometry([e.params.properties.edge]);
-                    } else {
-                        throw "Invalid ID returned";
+                    var valid_edge = false;
+                    if (!edge.type || edge_type === 'cta') {
+                        valid_edge = true;
+                    } else if (edge.type === 'cluster-target') {
+                        Self.saveMapTargetConnection(edge.objectId, null);
+                        valid_edge = true;
                     }
+                    if (valid_edge) {
+                        id = Self.saveCTAConnection(id, source_id, target_id);
+                        if (id !== null) {
+                            edge.id = 'cta-' + id;
+                            edge.type = 'cta';
+                            edge.objectId = id * 1;
+                            edge.style = edge.style + ";endArrow=arrow;";
+                            Self.saveCellsGeometry([e.params.properties.edge]);
+                        } else {
+                            throw "Invalid ID returned";
+                        }
+                    } else if (!edge.type) {
+                        graph.removeCells([edge], false);
+                    }
+                } else if (
+                    (source_type === 'page' || source_type === 'page-multi' || source_type === 'document' || source_type === 'document-multi') &&
+                    target_type === 'cluster'
+                ) {
+                    var valid_edge = false;
+                    if (!edge.type || edge.type === 'cluster-target') {
+                        Self.saveMapTargetConnection(target_id, null);
+                        valid_edge = true;
+                    } else if (edge.type === 'cta') {
+                        Self.removeCTAConnection(id);
+                        valid_edge = true;
+                    }
+                    if (valid_edge) {
+                        id = Self.saveMapTargetConnection(target_id, source_id);
+                        if (id !== null) {
+                            edge.id = 'clues-' + id;
+                            edge.type = 'cluster-target';
+                            edge.objectId = id * 1;
+                            edge.style = edge.style + ";endArrow=none;";
+                            Self.saveCellsGeometry([edge]);
+                        } else {
+                            throw "Invalid ID returned";
+                        }
+                    } else if (!edge.type) {
+                        graph.removeCells([edge], false);
+                    }
+                } else if (target_id !== null || target_type !== null) {
+                    graph.removeCells([edge], false);
                 }
             },
             onPopupMenu: function(e) {
@@ -146,12 +190,13 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
         {
             map_modals.newMap(Self, container, graph, mxPoint);
         }, submenu);
-        /*
         menu.addItem('Selector condicional', null, function()
         {
             var mxPoint = graph.getPointForEvent(evt);
-            graph.insertVertex(parent, null, 'Nuevo selector condicional', mxPoint.x, mxPoint.y, 120, 40, 'shape=conditional-selector;whiteSpace=wrap;');
+            var vertex = graph.insertVertex(parent, null, 'Nuevo selector condicional', mxPoint.x, mxPoint.y, 120, 40, 'shape=conditional-selector;whiteSpace=wrap;');
+            vertex.type = 'conditional-selector';
         }, submenu);
+        /*
         menu.addItem('Decisión', null, function()
         {
             var mxPoint = graph.getPointForEvent(evt);
@@ -421,5 +466,64 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
         }
 
         return id;
+    }
+
+    Nabu.VisualEditor.SiteEditor.prototype.removeCTAConnection = function(id)
+    {
+        if (this.id !== null) {
+            var ajax = new Nabu.Ajax.Connector(
+                '/api/site/' + this.id + '/visual-editor/cell/?action=remove-cta',
+                'DELETE',
+                {
+                    "headerAccept": "application/json",
+                    "contentType": "application/json",
+                    "synchronous": true
+                }
+            );
+            ajax.addEventListener(new Nabu.Event({
+                onLoad: function(evt) {
+                    var cta = evt.params.json.data;
+                    id =cta.id;
+                    return true;
+                }
+            }));
+            ajax.setPostJSON({
+                "id": id
+            });
+            ajax.execute();
+        } else {
+            throw "Site Editor requires a valid Id to save entities.";
+        }
+
+        return id;
+    }
+
+    Nabu.VisualEditor.SiteEditor.prototype.saveMapTargetConnection = function(map, target)
+    {
+        if (this.id !== null) {
+            var ajax = new Nabu.Ajax.Connector(
+                '/api/site/' + this.id + '/visual-editor/cell/?action=set-map-target',
+                'POST',
+                {
+                    "headerAccept": "application/json",
+                    "contentType": "application/json",
+                    "synchronous": true
+                }
+            );
+            ajax.addEventListener(new Nabu.Event({
+                onLoad: function(evt) {
+                    return true;
+                }
+            }));
+            ajax.setPostJSON({
+                "map_id": map,
+                "target_id": target
+            });
+            ajax.execute();
+        } else {
+            throw "Site Editor requires a valid Id to save entities.";
+        }
+
+        return map;
     }
 });

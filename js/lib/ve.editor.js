@@ -68,6 +68,14 @@ Nabu.VisualEditor.Editor.prototype =
                 console.log('FLIP_EDGE');
                 console.log(evt);
             });
+            graph.addListener(mxEvent.CONNECT, function(sender, evt) {
+                console.log('CONNECT');
+                console.log(evt);
+            });
+            graph.addListener(mxEvent.DISCONNECT, function(sender, evt) {
+                console.log('DISCONNECT');
+                console.log(evt);
+            });
 
             graph.addListener(mxEvent.CELL_CONNECTED, function(sender, evt) {
                 Self.events.fireEvent('onCellsConnected', sender, evt);
