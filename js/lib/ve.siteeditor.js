@@ -328,6 +328,11 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
         {
             target_modals.sdkSmarty(Self, container, model, cell);
         }, sdk);
+        menu.addSeparator();
+        menu.addItem('Clonar', null, function()
+        {
+            target_modals.clone(Self, container, model, cell);
+        });
     }
 
     Nabu.VisualEditor.SiteEditor.prototype.fillPagePopupMenu = function(menu, cell, evt)
