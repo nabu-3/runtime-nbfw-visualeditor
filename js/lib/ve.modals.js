@@ -274,6 +274,40 @@ Nabu.VisualEditor.Modals.SiteTarget.prototype =
             }
         }));
         modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/destino/' + cell.objectId + '/smarty');
+    },
+
+    safetyPolicies: function(editor, container, model, cell)
+    {
+        editor.lockWheel();
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e)
+            {
+                e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/politicas/' + cell.objectId + '/seguridad');
+    },
+
+    editorialPolicies: function(editor, container, model, cell)
+    {
+        editor.lockWheel();
+        var modal = new Nabu.UI.Modal(container[0], {});
+        modal.addEventListener(new Nabu.Event({
+            onAfterSubmit: function(e)
+            {
+                e.source.close();
+            },
+            onHideCompleted: function(e)
+            {
+                editor.unlockWheel();
+            }
+        }));
+        modal.openRemote('/es/productos/sitios/ajax/' + editor.id + '/politicas/' + cell.objectId + '/publicacion');
     }
 };
 

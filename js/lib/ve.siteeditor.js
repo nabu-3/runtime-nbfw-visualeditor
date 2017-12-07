@@ -329,6 +329,16 @@ nabu.registerLibrary('VE.SiteEditor', ['VE.Editor', 'VE.Modals', 'Modal'], funct
             target_modals.sdkSmarty(Self, container, model, cell);
         }, sdk);
         menu.addSeparator();
+        var policies = menu.addItem('Políticas', null, null);
+        menu.addItem('Seguridad', null, function()
+        {
+            target_modals.safetyPolicies(Self, container, model, cell);
+        }, policies);
+        menu.addItem('Publicación', null, function()
+        {
+            target_modals.editorialPolicies(Self, container, model, cell);
+        }, policies);
+        menu.addSeparator();
         menu.addItem('Clonar', null, function()
         {
             target_modals.clone(Self, container, model, cell);
